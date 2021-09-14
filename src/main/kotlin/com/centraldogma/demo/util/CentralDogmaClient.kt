@@ -1,8 +1,6 @@
 package com.centraldogma.demo.util
 
-import com.fasterxml.jackson.databind.JsonNode
-import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.module.kotlin.registerKotlinModule
+import com.centraldogma.demo.databind.parseFromJson
 import com.linecorp.centraldogma.client.CentralDogma
 import com.linecorp.centraldogma.client.Watcher
 import com.linecorp.centraldogma.common.Query
@@ -43,6 +41,3 @@ class CentralDogmaClient<T : Any>(
     val latestValue: T
         get() = this.watcher.latestValue()!!
 }
-
-fun <T : Any> JsonNode.parseFromJson(type: KClass<T>): T =
-        ObjectMapper().registerKotlinModule().readerFor(type.java).readValue(this)
