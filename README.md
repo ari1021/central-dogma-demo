@@ -39,7 +39,7 @@ Run Application to use following command at project root.
 
 You can draw a lot to access [http://127.0.0.1:8080/draw](http://127.0.0.1:8080/draw).
 
-Winning chance of the lot is the one defied at CentralDogma. i.e. If you use 'chance.json' above as it is, the
+Winning chance of the lot is the one defied at CentralDogma, i.e., if you use 'chance.json' above as it is, the
 winning chance is 50%.
 
 The winning chance appears in log like this.
@@ -60,9 +60,70 @@ Change chance value in 'chance.json'.
 }
 ```
 
-Draw a lot to access [http://127.0.0.1:8080/draw](http://127.0.0.1:8080/draw), and you'll see that the winning
-chance changed in log.
+Draw a lot to access [http://127.0.0.1:8080/draw](http://127.0.0.1:8080/draw), and you'll see in log that the
+winning chance changed.
 
 ```shell
 c.c.demo.service.LotteryService          : The chance of winning is 90%
 ```
+
+## how to use CentralDogma
+
+Assume you are using Spring Framework.
+
+### add dependency
+
+Add `com.linecorp.centraldogma:centraldogma-client-spring-boot-starter:0.52.1` to build.gradle.kts.
+
+```kotlin
+dependencies {
+    implementation("com.linecorp.centraldogma:centraldogma-client-spring-boot-starter:0.52.1")
+}
+```
+
+### add configuration
+
+Add a new section called `centraldogma` which contains some settings, e.g., hosts.
+
+```yaml
+centraldogma:
+  hosts:
+    - 127.0.0.1:36462
+```
+
+### create watcher
+
+When you finish adding dependency and configuration, you can use `com.linecorp.centraldogma.client.CentralDogma`
+. So, inject the `client.CentralDogma` into your application.
+
+Create `com.linecorp.centraldogma.client.Watcher` to use a method of `client.CentralDogma` which is injected.
+
+One of the method to create the `client.Wathcer` is `fileWatcher`.
+
+| name | type | description | 
+| --- | --- | --- | 
+| projectName | String | project name of CentralDogma | 
+| repositoryName | String | repository name of CentralDogma | 
+| query | com.linecorp.centraldogma.common.Query\<T\> | query on the file | 
+| function | java.util.function.Function\<? super T, ? extends U\> | function which converts from (? super T) to (? extends U) | 
+
+If you put json file in CentralDogma, you use `Query.ofJson(jsonPath)` as a third argument, so a fourth argument
+is `Function<? Super JsonNode, ? extends T>`.
+
+#### awaitInitialValue
+
+You can specify a timeout and a default value by using `watcher.awaitInitialVallue()`. If not using this method,
+your application has possibility of awaiting indefinitely.
+
+According to
+an [official document](https://line.github.io/centraldogma/client-java.html?highlight=awaitinitial#preparing-for-unavailability)
+, recommended timeout value is 20 seconds or more.
+> It is generally recommended to use a value not less than 20 seconds so that the client can retry at least a few times before timing out.
+
+### get latest value
+
+Get the latest value by using `watcher.latestValue()`.
+
+## reference
+
+https://line.github.io/centraldogma/
