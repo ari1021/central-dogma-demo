@@ -26,7 +26,7 @@ but it's easy to use administrative console.
 }
 ```
 
-See [chance_sample.json](https://github.com/ari1021/central-dogma-demo/blob/main/src/main/kotlin/com/centraldogma/demo/util/chance_sample.json)
+See [chance_sample.json](https://github.com/arkuchy/central-dogma-demo/blob/main/src/main/kotlin/com/centraldogma/demo/util/chance_sample.json)
 .
 
 ## run application
